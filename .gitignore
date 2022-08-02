@@ -1,0 +1,7 @@
+
+**.git
+/src/.vs
+**.editorconfig
+**bin
+**obj
+**.user
