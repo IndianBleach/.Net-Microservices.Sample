@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PlatformService.AsyncDataServices.Http;
 using PlatformService.DTOs;
 using PlatformService.Interfaces;
 using PlatformService.Models;
@@ -12,12 +13,16 @@ namespace PlatformService.Controllers
     {
         private readonly IPlatformRepository _platformRepository;
         private readonly IMapper _mapper;
+        private readonly ICommandDataClient _commandClient;
 
-        public PlatformsController(IPlatformRepository platRepo,
-            IMapper mapper)
+        public PlatformsController(
+            IPlatformRepository platRepo,
+            IMapper mapper,
+            ICommandDataClient client)
         {
             _platformRepository = platRepo;
             _mapper = mapper;
+            _commandClient = client;
         }
 
         [HttpGet]
@@ -40,13 +45,25 @@ namespace PlatformService.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PlatformReadDto> CreatePlatform([FromForm]PlatformCreateDto model)
+        public async Task<ActionResult<PlatformReadDto>> CreatePlatform([FromForm]PlatformCreateDto model)
         { 
             var platform = _mapper.Map<Platform>(model);
             _platformRepository.CreatePlatform(platform);
             _platformRepository.SaveChanges();
 
             var platformRead = _mapper.Map<PlatformReadDto>(platform);
+
+            try
+            {
+                await _commandClient.SendPlatformToCommand(platformRead);
+
+                Console.WriteLine("Send platform to command - ok");
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine("Send platform to command - not ok");
+            }
+
 
             return CreatedAtRoute(nameof(GetPlatformById), new { id = platformRead.Id }, platformRead);
         }
