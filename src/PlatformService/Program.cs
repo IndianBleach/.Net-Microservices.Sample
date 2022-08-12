@@ -13,8 +13,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseInMemoryDatabase("InMemory"));
+//configure db
+if (builder.Environment.IsProduction())
+{
+    Console.WriteLine("Use in SqlServer Db");
+
+    Console.WriteLine(builder.Configuration.GetConnectionString("PlatformConnection"));
+
+    builder.Services.AddDbContext<AppDbContext>(opt =>
+        opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformConnection")));
+}
+else
+{
+    Console.WriteLine("Use in Memory Db");
+    builder.Services.AddDbContext<AppDbContext>(opt =>
+        opt.UseInMemoryDatabase("InMemory"));
+}
+
 
 builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 
@@ -33,8 +48,7 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-
-PrepareDbContext.PrepareDb(app);
+PrepareDbContext.PrepareDb(app, app.Environment.IsProduction());
 
 app.UseAuthorization();
 
