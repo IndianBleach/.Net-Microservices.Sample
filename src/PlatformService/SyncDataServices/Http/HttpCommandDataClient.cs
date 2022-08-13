@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace PlatformService.AsyncDataServices.Http
+namespace PlatformService.SyncDataServices.Http
 {
     public class HttpCommandDataClient : ICommandDataClient
     {

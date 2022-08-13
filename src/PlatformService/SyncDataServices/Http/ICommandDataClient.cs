@@ -1,6 +1,6 @@
 ﻿using PlatformService.DTOs;
 
-namespace PlatformService.AsyncDataServices.Http
+namespace PlatformService.SyncDataServices.Http
 {
     public interface ICommandDataClient
     {

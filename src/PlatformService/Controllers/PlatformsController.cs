@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using PlatformService.AsyncDataServices.Http;
+using PlatformService.SyncDataServices.Http;
 using PlatformService.DTOs;
 using PlatformService.Interfaces;
 using PlatformService.Models;
+using PlatformService.AsyncDataServices;
 
 namespace PlatformService.Controllers
 {
@@ -14,15 +15,18 @@ namespace PlatformService.Controllers
         private readonly IPlatformRepository _platformRepository;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandClient;
+        private readonly IMessageBusClient _messageBusClient;
 
         public PlatformsController(
             IPlatformRepository platRepo,
             IMapper mapper,
-            ICommandDataClient client)
+            ICommandDataClient client,
+            IMessageBusClient messageBus)
         {
             _platformRepository = platRepo;
             _mapper = mapper;
             _commandClient = client;
+            _messageBusClient = messageBus;
         }
 
         [HttpGet]
@@ -62,6 +66,21 @@ namespace PlatformService.Controllers
             catch (Exception exp)
             {
                 Console.WriteLine("Send platform to command - not ok");
+            }
+
+
+            try
+            {
+                PlatformPublishedDto platformPubDto = _mapper.Map<PlatformPublishedDto>(platformRead);
+                
+                platformPubDto.Event = "Platform_Published";
+
+                _messageBusClient.PublishNewPlatform(platformPubDto);
+
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine("Send async - not ok: " + exp.Message);
             }
 
 

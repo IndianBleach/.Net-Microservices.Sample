@@ -32,7 +32,6 @@ namespace CommandService.Controllers
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commands));
         }
 
-
         [HttpGet("{commandId}", Name = "GetCommandForPlatform")]
         public async Task<ActionResult<CommandReadDto>> GetCommandForPlatform(int platformId, int commandId)
         {
@@ -48,7 +47,6 @@ namespace CommandService.Controllers
 
             return Ok(_mapper.Map<CommandReadDto>(command));
         }
-
 
         [HttpPost]
         public async Task<ActionResult<CommandReadDto>> CreateCommand(int platformId, CreateCommandDto model)
@@ -66,9 +64,6 @@ namespace CommandService.Controllers
             return CreatedAtRoute(nameof(GetCommandForPlatform),
                 new { platformId = platformId, commandId = commandDto.Id }, commandDto);
         }
-
-
-
 
         [HttpPost]
         public async Task<ActionResult> PlatformCommand()

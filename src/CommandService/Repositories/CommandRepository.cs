@@ -14,6 +14,8 @@ namespace CommandService.Repositories
             _context = context;
         }
 
+
+
         public void CreateCommand(int platformId, Command command)
         {
             if (command == null)
@@ -31,6 +33,9 @@ namespace CommandService.Repositories
 
             _context.Platforms.Add(platform);
         }
+
+        public bool ExternalPlatformExist(int externalPlatformId)
+            => _context.Platforms.Any(x => x.ExternalId == externalPlatformId);
 
         public IEnumerable<Platform> GetAllPlatforms()
             => _context.Platforms.ToList();

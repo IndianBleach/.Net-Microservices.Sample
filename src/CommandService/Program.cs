@@ -1,4 +1,6 @@
+using CommandService.AsyncDataServices;
 using CommandService.Data;
+using CommandService.EventProcessing;
 using CommandService.Interfaces;
 using CommandService.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -14,18 +16,19 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseInMemoryDatabase("CommandS
 
 builder.Services.AddScoped<ICommandRepository, CommandRepository>();
 
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+
+builder.Services.AddHostedService<MessageBusSubscriber>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
