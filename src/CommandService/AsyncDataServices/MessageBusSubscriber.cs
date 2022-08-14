@@ -21,23 +21,11 @@ namespace CommandService.AsyncDataServices
             _eventProcessor = eventProcessor;
 
             InitializeRabbitMQ();
-        }
-
-
-        public override void Dispose()
-        {
-            if (_channel.IsOpen)
-            {
-                _channel.Close();
-                _connection.Close();
-            }
-
-            base.Dispose();
-        }
+        }        
 
         private void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory
+            ConnectionFactory factory = new()
             {
                 HostName = _config["RabbitMQHost"],
                 Port = int.Parse(_config["RabbitMQPort"])                
@@ -57,16 +45,13 @@ namespace CommandService.AsyncDataServices
             _connection.ConnectionShutdown += _connection_ConnectionShutdown;
         }
 
-        private void _connection_ConnectionShutdown(object? sender, ShutdownEventArgs e)
-        {
-            Console.WriteLine("Connection ShutDown");
-        }
+        
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
 
-            var consumer = new EventingBasicConsumer(_channel);
+            EventingBasicConsumer consumer = new (_channel);
 
             consumer.Received += (model, content) =>
             {
@@ -81,6 +66,20 @@ namespace CommandService.AsyncDataServices
             _channel.BasicConsume(queue: _queueName, autoAck: true, consumer);
 
             return Task.CompletedTask;
+        }
+
+        private void _connection_ConnectionShutdown(object? sender, ShutdownEventArgs e)
+            => Console.WriteLine("Connection ShutDown");
+
+        public override void Dispose()
+        {
+            if (_channel.IsOpen)
+            {
+                _channel.Close();
+                _connection.Close();
+            }
+
+            base.Dispose();
         }
     }
 }

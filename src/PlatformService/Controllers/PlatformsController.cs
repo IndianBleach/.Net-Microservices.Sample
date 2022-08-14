@@ -55,7 +55,7 @@ namespace PlatformService.Controllers
             _platformRepository.CreatePlatform(platform);
             _platformRepository.SaveChanges();
 
-            var platformRead = _mapper.Map<PlatformReadDto>(platform);
+            PlatformReadDto platformRead = _mapper.Map<PlatformReadDto>(platform);
 
             try
             {

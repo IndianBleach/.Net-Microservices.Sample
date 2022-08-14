@@ -40,13 +40,11 @@ namespace PlatformService.AsyncDataServices
         }
 
         private void _connection_ConnectionShutdown(object? sender, ShutdownEventArgs e)
-        {
-            Console.WriteLine("Connection RabbitMQ Shutdown");
-        }
+            => Console.WriteLine("Connection RabbitMQ Shutdown");
 
         private void SendMessage(string message)
         {
-            var body = Encoding.UTF8.GetBytes(message);
+            byte[] body = Encoding.UTF8.GetBytes(message);
 
             _channel.BasicPublish(
                 exchange: "trigger",
@@ -55,6 +53,17 @@ namespace PlatformService.AsyncDataServices
                 body: body);
 
             Console.WriteLine("Message sent: " + message);
+        }
+        
+        public void PublishNewPlatform(PlatformPublishedDto model)
+        {
+            var msg = JsonSerializer.Serialize(model);
+
+            if (_connection.IsOpen)
+                SendMessage(msg);
+            
+            else 
+                Console.WriteLine("Msg Bus connection Closed, not sending");
         }
 
         public void Dispose()
@@ -65,22 +74,6 @@ namespace PlatformService.AsyncDataServices
             {
                 _channel.Close();
                 _connection.Close();
-            }
-        }
-
-        public void PublishNewPlatform(PlatformPublishedDto model)
-        {
-            var msg = JsonSerializer.Serialize(model);
-
-            if (_connection.IsOpen)
-            {
-                Console.WriteLine("Msg Bus connection Open, Sending data");
-
-                SendMessage(msg);
-            }
-            else
-            {
-                Console.WriteLine("Msg Bus connection Closed, not sending");
             }
         }
     }

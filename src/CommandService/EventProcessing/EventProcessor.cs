@@ -23,7 +23,6 @@ namespace CommandService.EventProcessing
             _mapper = mapper;
         }
 
-
         private EventType DetermineEvent(string notifyMessage)
         {
             Console.WriteLine("Determine event");
@@ -42,16 +41,15 @@ namespace CommandService.EventProcessing
             }
         }
 
-
         private void addPlatform(string platformPublished)
         {
             using (var scope = _serviceFactory.CreateScope())
             {
                 ICommandRepository repo = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
 
-                var platformPub = JsonSerializer.Deserialize<PlatformPublishedDto>(platformPublished);
+                PlatformPublishedDto platformPub = JsonSerializer.Deserialize<PlatformPublishedDto>(platformPublished);
 
-                var plat = _mapper.Map<Platform>(platformPub);
+                Platform plat = _mapper.Map<Platform>(platformPub);
 
                 if (!repo.ExternalPlatformExist(plat.ExternalId))
                 {

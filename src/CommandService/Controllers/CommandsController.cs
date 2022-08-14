@@ -20,7 +20,7 @@ namespace CommandService.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetCommandsForPlatform(int platformId)
+        public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetAllCommandsForPlatform(int platformId)
         {
             Console.WriteLine("GetCommandsForPlatform / " + platformId);
 
@@ -54,21 +54,21 @@ namespace CommandService.Controllers
             if (!_commandRepository.PlatformExists(platformId))
                 return NotFound();
 
-            var command = _mapper.Map<Command>(model);
+            Command command = _mapper.Map<Command>(model);
 
             _commandRepository.CreateCommand(platformId, command);
             _commandRepository.SaveChanges();
 
-            var commandDto = _mapper.Map<CommandReadDto>(command);
+            CommandReadDto commandDto = _mapper.Map<CommandReadDto>(command);
 
             return CreatedAtRoute(nameof(GetCommandForPlatform),
                 new { platformId = platformId, commandId = commandDto.Id }, commandDto);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> PlatformCommand()
-        {
-            return Ok(5);
-        }
+        //[HttpPost]
+        //public async Task<ActionResult> PlatformCommand()
+        //{
+        //    return Ok(5);
+        //}
     }
 }

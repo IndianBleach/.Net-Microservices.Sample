@@ -10,11 +10,7 @@ namespace CommandService.Repositories
         private readonly AppDbContext _context;
 
         public CommandRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-
+            => _context = context;
 
         public void CreateCommand(int platformId, Command command)
         {

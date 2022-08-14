@@ -26,10 +26,10 @@ namespace CommandService.Controllers
             return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platforms));
         }
 
-        [HttpPost]
-        public async Task<ActionResult> PlatformCommand()
-        {
-            return Ok();
-        }
+        //[HttpPost]
+        //public async Task<ActionResult> PlatformCommand()
+        //{
+        //    return Ok();
+        //}
     }
 }
