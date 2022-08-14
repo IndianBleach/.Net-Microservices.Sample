@@ -64,11 +64,5 @@ namespace CommandService.Controllers
             return CreatedAtRoute(nameof(GetCommandForPlatform),
                 new { platformId = platformId, commandId = commandDto.Id }, commandDto);
         }
-
-        //[HttpPost]
-        //public async Task<ActionResult> PlatformCommand()
-        //{
-        //    return Ok(5);
-        //}
     }
 }

@@ -57,17 +57,16 @@ namespace PlatformService.Controllers
 
             PlatformReadDto platformRead = _mapper.Map<PlatformReadDto>(platform);
 
-            try
-            {
-                await _commandClient.SendPlatformToCommand(platformRead);
+            //try
+            //{
+            //    await _commandClient.SendPlatformToCommand(platformRead);
 
-                Console.WriteLine("Send platform to command - ok");
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine("Send platform to command - not ok");
-            }
-
+            //    Console.WriteLine("Send platform to command - ok");
+            //}
+            //catch (Exception exp)
+            //{
+            //    Console.WriteLine("Send platform to command - not ok");
+            //}
 
             try
             {

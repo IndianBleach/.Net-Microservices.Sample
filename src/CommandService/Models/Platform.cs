@@ -11,7 +11,7 @@ namespace CommandService.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Cost { get; set; }
+        public string Publisher { get; set; }
         public ICollection<Command> Commands { get; set; } = new List<Command>();
 
     }
